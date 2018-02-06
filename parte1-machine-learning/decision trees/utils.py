@@ -10,6 +10,19 @@ def draw_tree(tree, df):
     s = export_graphviz(tree, out_file=None, feature_names=df.columns, filled=True)
     return graphviz.Source(s)
 
+def set_rf_samples(n):
+    """ Changes Scikit learn's random forests to give each tree a random sample of
+    n random rows.
+    """
+    forest._generate_sample_indices = (lambda rs, n_samples:
+        forest.check_random_state(rs).randint(0, n_samples, n))
+
+def reset_rf_samples():
+    """ Undoes the changes produced by set_rf_samples.
+    """
+    forest._generate_sample_indices = (lambda rs, n_samples:
+        forest.check_random_state(rs).randint(0, n_samples, n_samples))
+
 # Based on https://github.com/chrispaulca/waterfall.git
 def waterfallplot(sample, data, Title="", x_lab="", y_lab="",
 		 formatting="{:,.1f}", green_color='#29EA38', red_color='#FB3C62', blue_color='#24CAFF',
